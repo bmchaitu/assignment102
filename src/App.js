@@ -24,11 +24,11 @@ const App = () => {
         localStorage.setItem("auth-token", "");
         token = "";
       }
-      const tokenRes = await axios.post("https://salty-cliffs-27253.herokuapp.com/validate", null, {
+      const tokenRes = await axios.post("https://blooming-taiga-58489.herokuapp.com/validate", null, {
         headers: { "x-auth-token": token },
       });
         if (tokenRes.data) {
-        const userRes = await axios.get("https://salty-cliffs-27253.herokuapp.com/user", {
+        const userRes = await axios.get("https://blooming-taiga-58489.herokuapp.com/user", {
           headers: { "x-auth-token": token },
         });
         setUser({
