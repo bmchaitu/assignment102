@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 import axios from 'axios';
-
+import UserContext from '../context/UserContext';
 
 class CarList extends Component{
     constructor()
@@ -10,13 +10,17 @@ class CarList extends Component{
             list:[]
         });
         
+        
     }
+    static contextType = UserContext;
 
     async componentDidMount(){
         const {data} = await axios.get('https://blooming-taiga-58489.herokuapp.com/api/cars');
         this.setState({
             list:data
         });
+        console.log(this.context);
+        
         
     }
 
