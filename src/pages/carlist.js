@@ -19,7 +19,7 @@ class CarList extends Component{
         this.setState({
             list:data
         });
-        console.log(this.context);
+        
         
         
     }

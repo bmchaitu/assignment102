@@ -1,18 +1,23 @@
-import React,{ useContext } from 'react';
-import Body from '../components/Body';
-import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import React,{ useContext,useEffect } from 'react';
 import CarList from './carlist';
-import CustomerList from './customerlist'
-import Addcar from './addcars';
-import Modifycar from './modifycars';
 import UserContext from "../context/UserContext";
+import {useHistory} from 'react-router-dom';
 
 function Dashboard(){
-    const { setUser } = useContext(UserContext);
+    const history = useHistory();
+    const { setUser, user } = useContext(UserContext);
     const handleLogout = () => {
         localStorage.removeItem("auth-token");
         setUser({ token: undefined, user: undefined, loggedIn: false });
+        history.push('/');
     }
+    
+
+    useEffect(() => {
+		if (user.loggedIn) {
+		  history.push("/dashboard");
+		}
+	  }, [history, user]);
 
     return(
         <div className="container ">
@@ -22,15 +27,7 @@ function Dashboard(){
                     <button className="btn btn-warning" onClick={handleLogout}>LogOut</button>
                 </div>
             </div>
-                <BrowserRouter>
-                    <Switch>
-                        <Route exact path="/dashboard" component={Body}/>
-                        <Route exact path="/api/cars" component={CarList}/>
-                        <Route exact path="/api/customers" component={CustomerList}/>
-                        <Route exact path="/addcars" component={Addcar}/>
-                        <Route exact path="/modifycar" component={Modifycar}/>
-                    </Switch>                   
-                </BrowserRouter>
+                <CarList history={history}/>
             </div>
         </div>
     )

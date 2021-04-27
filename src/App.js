@@ -6,6 +6,7 @@ import { UserProvider } from "./context/UserContext";
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import Dashboard from './pages/dashboard';
 import PrivateRoute from './components/PrivateRoute';
+import ModifyRoute from './components/ModifyRoute';
 import Addcar from './pages/addcars'
 import Modifycar from './pages/modifycars';
 import axios from 'axios';
@@ -17,9 +18,11 @@ const App = () => {
     loggedIn : false
   });
   useEffect(() => {
-    console.log('Hello');
+    
+    console.log('Use effect');
     const checkLoggedIn = async () => {
       let token = localStorage.getItem("auth-token");
+      console.log('auth',token);
       if (token === null) {
         localStorage.setItem("auth-token", "");
         token = "";
@@ -33,12 +36,12 @@ const App = () => {
         });
         setUser({
           token,
-         user: userRes.data,
+         username: userRes.data,
           loggedIn: true,
         });
+        //history.push('/dashboard');
      }
     };
-
     checkLoggedIn();
   }, [])
 
@@ -51,9 +54,9 @@ const App = () => {
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={SignUp} />
             <Route exact path="/login" component={LogIn}/>
-            <PrivateRoute exact path="/dashboard" component={Dashboard} /> 
-            <PrivateRoute exact path="/modifycar" component={Modifycar} /> 
-            <PrivateRoute exact path="/addcars" component={Addcar} /> 
+            <Route exact path="/dashboard" component={Dashboard} /> 
+            <ModifyRoute exact path="/modifycar" component={Modifycar} /> 
+            <Route exact path="/addcars" component={Addcar} /> 
             <PrivateRoute exact path="/api/cars" component={CarList} /> 
           </Switch>
         </UserProvider>

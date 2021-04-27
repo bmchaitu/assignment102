@@ -1,13 +1,16 @@
 import axios from 'axios';
 import React from 'react';
+import UserContext from '../context/UserContext';
+
  class Modifycar extends React.Component{
     constructor(props){
         super(props);
         console.log(this.props);
         this.state={year:'',color:'',model:''};
     }
+    static contextType = UserContext;
     componentDidMount(){
-        console.log(this.props.location.state.cid._id);
+
         this.setState({ year:this.props.location.state.cid.year,
                         model:this.props.location.state.cid.model,
                         color:this.props.location.state.cid.color});
@@ -26,8 +29,29 @@ import React from 'react';
         .catch((err) => console.log(err));
 
     }
+
+    componentWillUnmount(){
+        const user  = this.context;
+        if (user.user.loggedIn)
+        this.props.history.push("/dashboard");
+    }
+
+    handleLogout = () => {
+        localStorage.removeItem("auth-token");
+        //setUser({ token: undefined, user: undefined, loggedIn: false });
+        this.props.history.push('/');
+    }
+
     render(){
         return (
+            <React.Fragment>
+            <nav className="mt-3 mx-5 navbar navbar-light bg-light">
+                    <a className="navbar-brand" href="/dashboard">Home</a>
+                    <div className="d-flex flex-row-reverse px-3">
+                    <button className="btn btn-warning" onClick={this.handleLogout}>LogOut</button>
+                </div>
+                </nav>
+
             <div className="addcontainer p-5">
                 <form className="form-signin" onSubmit={this.handleSubmit}>
                     <h2 className="mx-3">Enter New Car Details</h2>
@@ -37,6 +61,7 @@ import React from 'react';
                     <button className="btn btn-lg btn-success btn-block m-3" type="submit">Done</button>
                 </form>
             </div>
+            </React.Fragment>
             )
     }
 }
