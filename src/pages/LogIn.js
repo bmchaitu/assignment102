@@ -2,7 +2,9 @@ import axios from 'axios';
 import React,{useState,useContext,useEffect} from 'react';
 import {useHistory} from 'react-router-dom';
 import UserContext from "../context/UserContext";
+import Joi from 'joi-browser';
 import('../index.css')
+
 
 
 
@@ -10,6 +12,10 @@ function LogIn(){
     const history = useHistory();
 	const { setUser, user } = useContext(UserContext);
     const [state,setState] = useState({username:'',password:''});
+    const schema={
+        username:Joi.string().required(),
+        password:Joi.string().required()
+    };
     function handleChange (ev){
         const newstate = {...state};
         newstate[ev.target.name] = ev.target.value;
@@ -18,6 +24,8 @@ function LogIn(){
 
     function handleSubmit(ev){
 		ev.preventDefault();
+        const result = Joi.validate({username:state.username,password:state.password},schema);
+        console.log(result);
 		axios.post('https://blooming-taiga-58489.herokuapp.com/login',state)
 		.then((result) => {
 			setUser({
@@ -28,7 +36,7 @@ function LogIn(){
 				localStorage.setItem('auth-token',result.data.token);
 				history.push("/dashboard");
 		})
-		.catch((err) => <h1>Error in registering account</h1>);
+		.catch((err) => alert('Wrong Password/username'));
 	}
 
     useEffect(() => {

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React from 'react';
 import UserContext from '../context/UserContext';
+import Joi from 'joi-browser';
 
  class Addcar extends React.Component{
     constructor(){
@@ -9,6 +10,7 @@ import UserContext from '../context/UserContext';
         
 
     }
+   
     static contextType = UserContext;
     
     handleChange = (ev) => {
@@ -18,15 +20,30 @@ import UserContext from '../context/UserContext';
     }
     
     handleSubmit = (ev) => {
+        let schema={
+            model:Joi.string().required().label('Model name'),
+            year:Joi.number().required().label('Released Year'),
+            color:Joi.string().required().label('Color')
+        };
         ev.preventDefault();
+        const obj={color:this.state.color,
+            year:this.state.year,
+            model:this.state.model};
+            const res = Joi.validate(obj,schema);
+        if(res.error){
+        alert(res.error.message);
+        this.setState({year:'',model:'',color:''});
+        }
+        else{
         axios.post('https://blooming-taiga-58489.herokuapp.com/api/cars',this.state)
         .then(() => this.props.history.push('/dashboard'))
-        .catch((err) => console.log(err));
+        .catch((err) => alert('Something is wrong'));
+    }
 
     }
     componentDidMount(){
         const user  = this.context;
-        console.log(user.user.loggedIn);
+        //console.log(user.user.loggedIn);
         if (user.user.loggedIn)
         this.props.history.push("/addcars");
           
